@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фиолетовое меню</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background: #0a0a0a;
+            color: white;
+        }
+
+        /* Стили бургер-меню */
+        .menu-toggle {
+            position: fixed;
+            top: 25px;
+            left: 25px;
+            z-index: 1000;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .bar {
+            width: 30px;
+            height: 3px;
+            background: #8A2BE2;
+            margin: 6px 0;
+            transition: 0.4s;
+        }
+
+        /* Анимация бургера в крестик */
+        .menu-toggle.active .bar:nth-child(1) {
+            transform: rotate(-45deg) translate(-6px, 6px);
+        }
+
+        .menu-toggle.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-toggle.active .bar:nth-child(3) {
+            transform: rotate(45deg) translate(-6px, -6px);
+        }
+
+        /* Стили бокового меню */
+        .sidebar {
+            position: fixed;
+            left: -300px;
+            top: 0;
+            width: 250px;
+            height: 100%;
+            background: #1a1a1a;
+            padding: 80px 25px 25px;
+            transition: 0.3s;
+            box-shadow: 4px 0 15px rgba(138, 43, 226, 0.2);
+        }
+
+        .sidebar.active {
+            left: 0;
+        }
+
+        /* Стили пунктов меню */
+        .menu-item {
+            color: white;
+            text-decoration: none;
+            padding: 15px;
+            margin: 10px 0;
+            display: block;
+            border-radius: 8px;
+            transition: 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .menu-item:before {
+            content: '';
+            position: absolute;
+            left: -100%;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                rgba(138, 43, 226, 0) 0%,
+                rgba(138, 43, 226, 0.2) 50%,
+                rgba(138, 43, 226, 0) 100%
+            );
+            transition: 0.5s;
+        }
+
+        .menu-item:hover {
+            background: #2d2d2d;
+            transform: translateX(10px);
+        }
+
+        .menu-item:hover:before {
+            left: 100%;
+        }
+
+    </style>
+</head>
+<body>
+    <!-- Бургер-меню -->
+    <div class="menu-toggle">
+        <div class="bar"></div>
+        <div class="bar"></div>
+        <div class="bar"></div>
+    </div>
+
+    <!-- Боковое меню -->
+    <nav class="sidebar">
+        <a href="#" class="menu-item">👤 Ваш профиль</a>
+        <a href="#" class="menu-item">💰 Баланс</a>
+        <a href="#" class="menu-item">💳 Пополнение</a>
+        <a href="#" class="menu-item">🛍 Магазин</a>
+    </nav>
+
+    <script>
+        const menuToggle = document.querySelector('.menu-toggle');
+        const sidebar = document.querySelector('.sidebar');
+
+        menuToggle.addEventListener('click', () => {
+            menuToggle.classList.toggle('active');
+            sidebar.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>
