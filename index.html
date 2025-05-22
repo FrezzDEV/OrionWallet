@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Фиолетовое меню с балансом и заявками</title>
+    <title>Фиолетовое меню с входом</title>
     <style>
         * {
             margin: 0;
@@ -11,13 +11,11 @@
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
         }
-
         body {
             background: #0a0a0a;
             color: white;
         }
-
-        /* Стили бургер-меню */
+        /* Бургер-меню */
         .menu-toggle {
             position: fixed;
             top: 25px;
@@ -25,8 +23,8 @@
             z-index: 1000;
             cursor: pointer;
             transition: all 0.3s;
+            display: none; /* Скрываем пока не залогинились */
         }
-
         .bar {
             width: 30px;
             height: 3px;
@@ -34,39 +32,32 @@
             margin: 6px 0;
             transition: 0.4s;
         }
-
-        /* Анимация бургера в крестик */
         .menu-toggle.active .bar:nth-child(1) {
             transform: rotate(-45deg) translate(-6px, 6px);
         }
-
         .menu-toggle.active .bar:nth-child(2) {
             opacity: 0;
         }
-
         .menu-toggle.active .bar:nth-child(3) {
             transform: rotate(45deg) translate(-6px, -6px);
         }
-
-        /* Стили бокового меню */
+        /* Боковое меню */
         .sidebar {
             position: fixed;
             left: -300px;
             top: 0;
-            width: 320px;
+            width: 250px;
             height: 100%;
             background: #1a1a1a;
             padding: 80px 25px 25px;
             transition: 0.3s;
             box-shadow: 4px 0 15px rgba(138, 43, 226, 0.2);
-            overflow-y: auto;
+            display: none; /* Скрываем пока не залогинились */
         }
-
         .sidebar.active {
             left: 0;
         }
-
-        /* Стили пунктов меню */
+        /* Пункты меню */
         .menu-item {
             color: white;
             text-decoration: none;
@@ -77,9 +68,7 @@
             transition: 0.3s;
             position: relative;
             overflow: hidden;
-            background: #222;
         }
-
         .menu-item:before {
             content: '';
             position: absolute;
@@ -87,134 +76,176 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg,
+            background: linear-gradient(90deg, 
                 rgba(138, 43, 226, 0) 0%,
                 rgba(138, 43, 226, 0.2) 50%,
                 rgba(138, 43, 226, 0) 100%
             );
             transition: 0.5s;
-            z-index: 0;
         }
-
         .menu-item:hover {
             background: #2d2d2d;
             transform: translateX(10px);
         }
-
         .menu-item:hover:before {
             left: 100%;
         }
 
-        .menu-item span {
-            position: relative;
-            z-index: 1;
-            display: block;
+        /* Входная форма */
+        #login-container {
+            max-width: 300px;
+            margin: 100px auto;
+            color: white;
+            text-align: center;
         }
-
-        /* Стиль для заголовков внутри меню */
-        .menu-header {
-            font-weight: bold;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-            border-bottom: 1px solid #8A2BE2;
-            padding-bottom: 5px;
+        #login-container input {
+            width: 100%;
+            padding: 8px;
+            margin-top: 6px;
+            margin-bottom: 15px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        #login-container button {
+            background-color: #8A2BE2;
+            border: none;
+            color: white;
+            padding: 10px;
+            width: 100%;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        #login-container button:hover {
+            background-color: #7a21d1;
+        }
+        #message {
+            margin-top: 15px;
+            height: 20px;
+        }
+        /* После входа показывать меню */
+        #content {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <!-- Бургер-меню -->
-    <div class="menu-toggle" aria-label="Toggle menu" role="button" tabindex="0">
-        <div class="bar"></div>
-        <div class="bar"></div>
-        <div class="bar"></div>
+    <!-- Вход -->
+    <div id="login-container">
+        <h2>Вход / Регистрация</h2>
+        <form id="login-form">
+            <label for="tg_id">Telegram ID:</label><br />
+            <input type="number" id="tg_id" name="tg_id" required /><br />
+
+            <label for="tg_username">Telegram username (@username):</label><br />
+            <input type="text" id="tg_username" name="tg_username" required pattern="^@.+" /><br />
+
+            <button type="submit">Войти</button>
+        </form>
+        <p id="message"></p>
     </div>
 
-    <!-- Боковое меню -->
-    <nav class="sidebar" aria-label="Sidebar menu">
-        <a href="#" class="menu-item" id="profile-item">👤 Загрузка профиля...</a>
-        <a href="#" class="menu-item" id="balance-item">💰 Загрузка баланса...</a>
-        <a href="#" class="menu-item" id="withdrawals-item">
-            📝 Загрузка заявок...
-        </a>
-        <a href="#" class="menu-item">💳 Пополнение</a>
-        <a href="#" class="menu-item">🛍 Магазин</a>
-    </nav>
+    <!-- Основной контент (скрыт до входа) -->
+    <div id="content">
+        <!-- Бургер-меню -->
+        <div class="menu-toggle">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <a href="#" class="menu-item" id="profile-link">👤 Ваш профиль</a>
+            <a href="#" class="menu-item" id="balance-link">💰 Баланс: <span id="balance-value">0</span> баллов</a>
+            <a href="#" class="menu-item" id="withdrawals-link">📤 Заявки: <span id="withdrawals-count">0</span>, Баллы: <span id="withdrawals-points">0</span>, Сумма: $<span id="withdrawals-sum">0.00</span></a>
+            <a href="#" class="menu-item">💳 Пополнение</a>
+            <a href="#" class="menu-item">🛍 Магазин</a>
+        </nav>
+    </div>
 
     <script>
+        const form = document.getElementById('login-form');
+        const message = document.getElementById('message');
+        const loginContainer = document.getElementById('login-container');
+        const content = document.getElementById('content');
         const menuToggle = document.querySelector('.menu-toggle');
         const sidebar = document.querySelector('.sidebar');
+        const balanceValue = document.getElementById('balance-value');
+        const withdrawalsCount = document.getElementById('withdrawals-count');
+        const withdrawalsPoints = document.getElementById('withdrawals-points');
+        const withdrawalsSum = document.getElementById('withdrawals-sum');
 
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            message.textContent = '';
+            const tg_id = document.getElementById('tg_id').value.trim();
+            const tg_username = document.getElementById('tg_username').value.trim();
+
+            try {
+                const response = await fetch('/api/check_user', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ tg_id, tg_username })
+                });
+                const data = await response.json();
+
+                if (data.exists) {
+                    message.style.color = 'lightgreen';
+                    message.textContent = 'Пользователь найден! Добро пожаловать.';
+
+                    // Скрываем форму входа и показываем меню
+                    loginContainer.style.display = 'none';
+                    content.style.display = 'block';
+                    menuToggle.style.display = 'block';
+                    sidebar.style.display = 'block';
+
+                    // Загружаем данные пользователя с сервера
+                    loadUserData(tg_id);
+
+                } else {
+                    message.style.color = 'red';
+                    message.textContent = 'Пользователь не найден. Пожалуйста, зарегистрируйтесь в боте.';
+                }
+            } catch (error) {
+                message.style.color = 'red';
+                message.textContent = 'Ошибка сервера. Попробуйте позже.';
+                console.error(error);
+            }
+        });
+
+        async function loadUserData(tg_id) {
+            try {
+                const res = await fetch('/api/get_user_data', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({ tg_id })
+                });
+                const data = await res.json();
+
+                if (data.success) {
+                    balanceValue.textContent = data.balance;
+                    withdrawalsCount.textContent = data.withdrawals_count;
+                    withdrawalsPoints.textContent = data.withdrawals_points;
+                    withdrawalsSum.textContent = (data.withdrawals_points / 100).toFixed(2);
+                } else {
+                    balanceValue.textContent = '0';
+                    withdrawalsCount.textContent = '0';
+                    withdrawalsPoints.textContent = '0';
+                    withdrawalsSum.textContent = '0.00';
+                }
+            } catch (e) {
+                console.error('Ошибка при загрузке данных:', e);
+            }
+        }
+
+        // Бургер-меню открытие/закрытие
         menuToggle.addEventListener('click', () => {
             menuToggle.classList.toggle('active');
             sidebar.classList.toggle('active');
         });
-
-        // Пример user_id для запроса — в реальном проекте нужно брать из сессии или авторизации
-        // Пока укажем для теста user_id=123 (замени на реальный или получай динамически)
-        const USER_ID = 123;
-
-        async function fetchUserData() {
-            try {
-                const res = await fetch('/api/users');
-                if (!res.ok) throw new Error('Ошибка загрузки пользователей');
-                const users = await res.json();
-                return users;
-            } catch (e) {
-                console.error(e);
-                return null;
-            }
-        }
-
-        async function fetchWithdrawalsSummary() {
-            try {
-                const res = await fetch('/api/withdrawals-summary');
-                if (!res.ok) throw new Error('Ошибка загрузки заявок');
-                const summary = await res.json();
-                return summary;
-            } catch (e) {
-                console.error(e);
-                return null;
-            }
-        }
-
-        async function updateMenu() {
-            // Загрузка данных
-            const users = await fetchUserData();
-            const withdrawals = await fetchWithdrawalsSummary();
-
-            // Найдём пользователя (пример, у тебя должна быть авторизация для реального user_id)
-            const user = users ? users.find(u => u.user_id === USER_ID) : null;
-
-            // Обновляем профиль (user_id + Telegram ID)
-            const profileEl = document.getElementById('profile-item');
-            if (user) {
-                profileEl.textContent = `👤 Пользователь ID: ${user.user_id}`;
-            } else {
-                profileEl.textContent = '👤 Пользователь не найден';
-            }
-
-            // Обновляем баланс
-            const balanceEl = document.getElementById('balance-item');
-            if (user) {
-                balanceEl.textContent = `💰 Баланс: ${user.balance} баллов`;
-            } else {
-                balanceEl.textContent = '💰 Баланс: -';
-            }
-
-            // Обновляем заявки на вывод
-            const withdrawEl = document.getElementById('withdrawals-item');
-            if (withdrawals) {
-                withdrawEl.innerHTML = `📝 Заявок: ${withdrawals.requests_count}<br>
-                    Баллов всего: ${withdrawals.total_points}<br>
-                    Итоговая сумма: $${withdrawals.total_usd}`;
-            } else {
-                withdrawEl.textContent = '📝 Ошибка загрузки заявок';
-            }
-        }
-
-        updateMenu();
-        // Обновлять каждые 30 секунд (можно изменить)
-        setInterval(updateMenu, 30000);
     </script>
 </body>
 </html>
