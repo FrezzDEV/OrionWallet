@@ -1,128 +1,33 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Панель пользователя</title>
+  <meta charset="UTF-8">
+  <title>Вход</title>
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { background: #0a0a0a; color: white; }
-
-    .container {
-      display: flex; flex-direction: column; align-items: center;
-      justify-content: center; height: 100vh;
-    }
-
-    input, button {
-      padding: 10px; margin: 10px; border-radius: 8px;
-      border: none; outline: none;
-    }
-
-    button {
-      background: #8A2BE2; color: white; cursor: pointer;
-    }
-
-    .menu-toggle {
-      position: fixed; top: 25px; left: 25px;
-      z-index: 1000; cursor: pointer; display: none;
-    }
-
-    .bar {
-      width: 30px; height: 3px;
-      background: #8A2BE2; margin: 6px 0;
-      transition: 0.4s;
-    }
-
-    .menu-toggle.active .bar:nth-child(1) {
-      transform: rotate(-45deg) translate(-6px, 6px);
-    }
-
-    .menu-toggle.active .bar:nth-child(2) {
-      opacity: 0;
-    }
-
-    .menu-toggle.active .bar:nth-child(3) {
-      transform: rotate(45deg) translate(-6px, -6px);
-    }
-
-    .sidebar {
-      position: fixed; left: -300px; top: 0;
-      width: 250px; height: 100%;
-      background: #1a1a1a; padding: 80px 25px 25px;
-      transition: 0.3s;
-      box-shadow: 4px 0 15px rgba(138, 43, 226, 0.2);
-    }
-
-    .sidebar.active {
-      left: 0;
-    }
-
-    .menu-item {
-      color: white; text-decoration: none; padding: 15px;
-      margin: 10px 0; display: block;
-      border-radius: 8px; transition: 0.3s;
-    }
-
-    .menu-item:hover {
-      background: #2d2d2d;
-      transform: translateX(10px);
-    }
-
-    .content {
-      padding: 20px;
-    }
+    body { background: #0a0a0a; color: white; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: sans-serif; }
+    .login-box { background: #1a1a1a; padding: 30px; border-radius: 10px; box-shadow: 0 0 20px rgba(138, 43, 226, 0.4); }
+    input, button { padding: 10px; margin-top: 10px; width: 100%; border: none; border-radius: 5px; }
+    button { background: #8A2BE2; color: white; cursor: pointer; }
   </style>
 </head>
 <body>
 
-<div class="container" id="login-form">
+<div class="login-box">
   <h2>Вход</h2>
-  <input type="number" id="tg-id" placeholder="Ваш Telegram ID" required>
+  <input type="number" id="tg-id" placeholder="Введите Telegram ID">
   <button onclick="login()">Войти</button>
 </div>
 
-<div class="menu-toggle" id="menu-toggle">
-  <div class="bar"></div>
-  <div class="bar"></div>
-  <div class="bar"></div>
-</div>
-
-<nav class="sidebar" id="sidebar">
-  <a href="#" class="menu-item">👤 Профиль</a>
-  <a href="#" class="menu-item">💰 Баланс</a>
-  <a href="#" class="menu-item">📤 Заявки на вывод</a>
-</nav>
-
-<div class="content" id="content" style="display: none;"></div>
-
 <script>
-  const menuToggle = document.getElementById("menu-toggle");
-  const sidebar = document.getElementById("sidebar");
-  const content = document.getElementById("content");
-  const loginForm = document.getElementById("login-form");
-
-  menuToggle.addEventListener('click', () => {
-    menuToggle.classList.toggle('active');
-    sidebar.classList.toggle('active');
-  });
-
   function login() {
-    const tgId = document.getElementById("tg-id").value;
-    if (!tgId) return alert("Введите Telegram ID");
+    const userId = document.getElementById("tg-id").value;
+    if (!userId) return alert("Введите Telegram ID");
 
-    fetch(`/login?user_id=${tgId}`)
+    fetch(`/login?user_id=${userId}`)
       .then(res => res.json())
       .then(data => {
         if (data.success) {
-          loginForm.style.display = "none";
-          content.style.display = "block";
-          menuToggle.style.display = "block";
-          content.innerHTML = `
-            <h2>Добро пожаловать, ID ${tgId}</h2>
-            <p>Баланс: ${data.balance} баллов</p>
-            <p>Всего заявок на вывод: ${data.withdrawals}</p>
-            <p>Сумма в баллах: ${data.total_amount} (${(data.total_amount / 100).toFixed(2)}$)</p>
-          `;
+          window.location.href = `/profile.html?user_id=${userId}`;
         } else {
           alert("Пользователь не найден");
         }
