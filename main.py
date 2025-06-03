@@ -78,7 +78,7 @@ async def start(update: Update, context: CallbackContext) -> None:
     keyboard = [[
         InlineKeyboardButton(
             text="Открыть Orion Wallet",
-            web_app={'url': WEB_APP_URL}
+            web_app={'url': https://frezzdev.github.io/Website-TG/}
         )
     ]]
     reply_markup = InlineKeyboardMarkup(keyboard)
