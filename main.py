@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 
 # Конфигурация
 TOKEN = '7814519439:AAGHwL-o20low67Mh-HB1Cs0fTmNlnX6RwQ'
-WEB_APP_URL = 'https://frezzdev.github.io/basic-rel/'
+WEB_APP_URL = 'https://basic-rel.vercel.app/'
 PROVIDER_TOKEN = 'ВАШ_ПЛАТЕЖНЫЙ_ТОКЕН'
 STARS_EXCHANGE_RATE = 0.012987  # 1 STAR = 0.012987 USDT
 
