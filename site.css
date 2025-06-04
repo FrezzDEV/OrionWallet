@@ -1,4 +1,4 @@
-/* Общие стили */
+/* site.css (без изменений, полный код из вашего документа) */
 * {
     margin: 0;
     padding: 0;
@@ -6,7 +6,6 @@
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* Переменные */
 :root {
     --bg-primary: #121318;
     --bg-secondary: #1E1F29;
@@ -21,7 +20,6 @@
     --stars-color: #FFD700;
 }
 
-/* Стили для body */
 body {
     background-color: var(--bg-primary);
     color: var(--text-primary);
@@ -32,7 +30,6 @@ body {
     padding: 16px;
 }
 
-/* Основной контейнер приложения */
 .app-container {
     width: 100%;
     max-width: 480px;
@@ -46,7 +43,7 @@ body {
     position: relative;
 }
 
-/* Стили шапки */
+/* Header Styles */
 .header {
     background-color: var(--bg-secondary);
     padding: 20px 16px 12px;
@@ -90,7 +87,7 @@ body {
     outline: none;
 }
 
-/* Основной контент */
+/* Main Content */
 .content {
     flex: 1;
     overflow-y: auto;
@@ -108,7 +105,7 @@ body {
     font-weight: 600;
 }
 
-/* Секция баланса */
+/* Balance Section */
 .balance-section {
     background-color: var(--bg-secondary);
     border-radius: var(--border-radius);
@@ -146,7 +143,7 @@ body {
     cursor: pointer;
 }
 
-/* Кнопки действий */
+/* Action Buttons */
 .actions-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -174,16 +171,12 @@ body {
     transform: translateY(-2px);
 }
 
-.action-btn i {
-    font-size: 20px; /* Уточнение размера иконок */
-}
-
 .action-label {
     font-size: 12px;
     margin-top: 8px;
 }
 
-/* Секция криптовалют */
+/* Crypto Assets */
 .assets-section {
     background-color: var(--bg-secondary);
     border-radius: var(--border-radius);
@@ -237,11 +230,6 @@ body {
     font-size: 18px;
 }
 
-.asset-icon i {
-    font-size: 18px; /* Уточнение размера иконок FontAwesome */
-    color: var(--accent-purple);
-}
-
 .asset-details {
     display: flex;
     flex-direction: column;
@@ -292,7 +280,7 @@ body {
     font-size: 12px;
 }
 
-/* Навигация */
+/* Navigation */
 .bottom-nav {
     background-color: var(--bg-secondary);
     display: flex;
@@ -333,7 +321,7 @@ body {
     box-shadow: 0 4px 12px rgba(108, 92, 231, 0.4);
 }
 
-/* История операций */
+/* History Page */
 .history-header {
     display: flex;
     justify-content: space-between;
@@ -431,7 +419,281 @@ body {
     gap: 8px;
 }
 
-/* Стили для Telegram Stars */
+/* Exchange Screen */
+.exchange-container {
+    padding: 16px;
+}
+
+.exchange-header {
+    margin-bottom: 24px;
+}
+
+.exchange-title {
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 16px;
+}
+
+.exchange-types {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.exchange-type {
+    flex: 1;
+    background-color: var(--bg-secondary);
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    color: var(--text-primary);
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+}
+
+.exchange-type.active {
+    background-color: var(--accent-purple);
+}
+
+.card-sell-container {
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.card-sell-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.card-sell-title {
+    font-weight: 600;
+}
+
+.card-sell-body {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.card-sell-card {
+    background-color: var(--bg-tertiary);
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+}
+
+.card-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+    color: var(--accent-purple);
+}
+
+.card-name {
+    font-size: 12px;
+    color: var(--text-secondary);
+}
+
+.currency-selector {
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.currency-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.currency-title {
+    font-weight: 600;
+}
+
+.currency-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+
+.currency-item {
+    background-color: var(--bg-tertiary);
+    border-radius: 12px;
+    padding: 12px;
+    text-align: center;
+    cursor: pointer;
+}
+
+.currency-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.currency-name {
+    font-size: 12px;
+}
+
+/* Profile Page */
+.profile-header {
+    padding: 20px 0;
+    text-align: center;
+}
+
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent-purple), #4158D0);
+    margin: 0 auto 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+}
+
+.profile-username {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.profile-status {
+    background-color: var(--accent-purple);
+    padding: 4px 12px;
+    border-radius: 12px;
+    font-size: 12px;
+    display: inline-block;
+}
+
+.section {
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    margin-bottom: 16px;
+    overflow: hidden;
+}
+
+.section-title {
+    padding: 16px;
+    font-weight: 600;
+}
+
+.menu-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px;
+    border-top: 1px solid var(--bg-tertiary);
+    cursor: pointer;
+}
+
+.menu-item:first-child {
+    border-top: none;
+}
+
+.menu-item-content {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.menu-item-icon {
+    width: 24px;
+    text-align: center;
+}
+
+.logout-btn {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+    border: 1px solid var(--accent-purple);
+    border-radius: 12px;
+    padding: 16px;
+    font-weight: 600;
+    width: 100%;
+    margin-top: 24px;
+    cursor: pointer;
+}
+
+/* Info Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    background-color: var(--bg-secondary);
+    border-radius: var(--border-radius);
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    position: relative;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 24px;
+    cursor: pointer;
+}
+
+.info-content {
+    line-height: 1.6;
+}
+
+.info-section {
+    margin-bottom: 20px;
+}
+
+.info-title {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: var(--accent-purple);
+}
+
+.info-text {
+    margin-bottom: 12px;
+    font-size: 14px;
+}
+
+.highlight {
+    color: var(--accent-green);
+    font-weight: 600;
+}
+
+/* Utility Classes */
+.hidden {
+    display: none;
+}
+
+/* Стили для TG Stars */
 .stars-container {
     background-color: var(--bg-secondary);
     border-radius: var(--border-radius);
@@ -467,10 +729,6 @@ body {
     align-items: center;
     gap: 8px;
     color: var(--stars-color);
-}
-
-.stars-amount i {
-    font-size: 24px; /* Уточнение размера иконки звезды */
 }
 
 .stars-actions {
@@ -582,7 +840,7 @@ body {
     font-weight: 600;
 }
 
-/* Стили для поиска и выбора валют */
+/* Стили для поиска и валют */
 .search-container {
     position: relative;
     padding: 0 16px 16px;
@@ -594,7 +852,6 @@ body {
     top: 50%;
     transform: translateY(-50%);
     color: var(--text-secondary);
-    font-size: 16px; /* Уточнение размера иконки поиска */
 }
 
 #crypto-search {
@@ -605,12 +862,6 @@ body {
     padding: 12px 12px 12px 40px;
     color: var(--text-primary);
     font-size: 14px;
-    transition: background-color 0.2s ease;
-}
-
-#crypto-search:focus {
-    background-color: var(--bg-secondary);
-    outline: none;
 }
 
 .currency-selector-top {
@@ -632,7 +883,6 @@ body {
     display: flex;
     align-items: center;
     gap: 4px;
-    transition: all 0.2s ease;
 }
 
 .currency-option-top.active {
@@ -640,68 +890,9 @@ body {
     color: white;
 }
 
-/* Модальные окна */
-.modal-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.3s ease; /* Плавное появление */
+/* Стили для графика */
+#crypto-chart {
+    width: 100%;
+    height: 300px;
+    margin-top: 16px;
 }
-
-.modal-overlay:not(.hidden) {
-    opacity: 1;
-}
-
-.modal {
-    background-color: var(--bg-secondary);
-    border-radius: var(--border-radius);
-    width: 90%;
-    max-width: 500px;
-    max-height: 90vh;
-    overflow-y: auto;
-    padding: 24px;
-    position: relative;
-    transform: scale(0.8);
-    transition: transform 0.3s ease; /* Плавное увеличение */
-}
-
-.modal-overlay:not(.hidden) .modal {
-    transform: scale(1);
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.modal-title {
-    font-size: 20px;
-    font-weight: 700;
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 24px;
-    cursor: pointer;
-}
-
-.info-content {
-    line-height: 1.6;
-}
-
-.info-section {
-    margin-bottom: 20px;
-}
-
