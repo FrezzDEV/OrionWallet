@@ -1,15 +1,6 @@
 # main.py
-from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup, LabeledPrice
-from telegram.ext import (
-    Application,
-    CommandHandler,
-    CallbackContext,
-    MessageHandler,
-    Filters,
-    PreCheckoutQueryHandler,
-    CallbackQueryHandler
-)
-import asyncio
+import telebot
+from telebot.types import InlineKeyboardButton, InlineKeyboardMarkup, LabeledPrice
 import json
 import logging
 import requests
@@ -24,9 +15,12 @@ logger = logging.getLogger(__name__)
 
 # Конфигурация
 TOKEN = '7814519439:AAGHwL-o20low67Mh-HB1Cs0fTmNlnX6RwQ'
-WEB_APP_URL = 'https://basic-rel.vercel.app/'
-PROVIDER_TOKEN = 'ВАШ_ПЛАТЕЖНЫЙ_ТОКЕН'
+WEB_APP_URL = 'https://frezzdev.github.io/basic-rel/'
+PROVIDER_TOKEN = 'ВАШ_ПЛАТЕЖНЫЙ_ТОКЕН'  # Replace with actual payment provider token
 STARS_EXCHANGE_RATE = 0.012987  # 1 STAR = 0.012987 USDT
+
+# Инициализация бота
+bot = telebot.TeleBot(TOKEN)
 
 # Хранилище данных пользователей (в реальном приложении использовать БД)
 user_db = {}
@@ -61,9 +55,10 @@ def get_crypto_rates():
         return {}
 
 # Обработчик команды /start
-async def start(update: Update, context: CallbackContext) -> None:
+@bot.message_handler(commands=['start'])
+def start(message):
     """Запускает бота и открывает WebApp."""
-    user = update.effective_user
+    user = message.from_user
     user_id = user.id
     
     # Инициализация пользователя
@@ -72,78 +67,82 @@ async def start(update: Update, context: CallbackContext) -> None:
             'balance': 1000.0,
             'stars': 500,
             'transactions': [],
-            'username': user.username or user.full_name
+            'username': user.username or user.first_name
         }
     
-    keyboard = [[
-        InlineKeyboardButton(
-            text="Открыть Orion Wallet",
-            web_app={'url': WEB_APP_URL}
-        )
-    ]]
-    reply_markup = InlineKeyboardMarkup(keyboard)
+    keyboard = InlineKeyboardMarkup()
+    keyboard.add(InlineKeyboardButton(
+        text="Открыть Orion Wallet",
+        web_app={'url': WEB_APP_URL}
+    ))
     
-    await update.message.reply_text(
+    bot.reply_to(
+        message,
         f'Привет, {user_db[user_id]["username"]}! Добро пожаловать в Orion Wallet.\n'
         'Нажмите кнопку ниже, чтобы открыть кошелек:',
-        reply_markup=reply_markup
+        reply_markup=keyboard
     )
 
 # Получение данных пользователя
-async def user_data(update: Update, context: CallbackContext) -> None:
+@bot.message_handler(commands=['user_data'])
+def user_data(message):
     """Возвращает данные пользователя по его ID."""
     try:
-        user_id = int(context.args[0])
+        user_id = int(message.text.split()[1])
         if user_id in user_db:
             user_data = user_db[user_id]
-            await update.message.reply_text(
+            bot.reply_to(
+                message,
                 f'Данные пользователя @{user_data["username"]}:\n'
                 f'Баланс: {user_data["balance"]:.2f} USDT\n'
                 f'Stars: {user_data["stars"]}\n'
                 f'Транзакций: {len(user_data["transactions"])}'
             )
         else:
-            await update.message.reply_text('Пользователь не найден')
+            bot.reply_to(message, 'Пользователь не найден')
     except (IndexError, ValueError):
-        await update.message.reply_text('Ошибка: укажите корректный user_id')
+        bot.reply_to(message, 'Ошибка: укажите корректный user_id')
 
 # API для получения данных пользователя
-async def user_data_api(update: Update, context: CallbackContext) -> None:
+@bot.message_handler(regexp=r'^/user_data_api\?')
+def user_data_api(message):
     """API-эндпоинт для получения данных пользователя."""
     try:
-        user_id = int(update.message.text.split('=')[1])
+        user_id = int(message.text.split('=')[1])
         if user_id in user_db:
             user_data = user_db[user_id]
-            await update.message.reply_json({
+            bot.reply_to(message, json.dumps({
                 'status': 'success',
                 'user_id': user_id,
                 'username': user_data['username'],
                 'balance': user_data['balance'],
                 'stars': user_data['stars']
-            })
+            }))
         else:
-            await update.message.reply_json({'status': 'error', 'message': 'User not found'})
+            bot.reply_to(message, json.dumps({'status': 'error', 'message': 'User not found'}))
     except (IndexError, ValueError):
-        await update.message.reply_json({'status': 'error', 'message': 'Invalid user_id'})
+        bot.reply_to(message, json.dumps({'status': 'error', 'message': 'Invalid user_id'}))
 
 # API для получения курсов криптовалют
-async def crypto_rates_api(update: Update, context: CallbackContext) -> None:
+@bot.message_handler(commands=['crypto_rates_api'])
+def crypto_rates_api(message):
     """API-эндпоинт для получения курсов криптовалют."""
     rates = get_crypto_rates()
-    user_id = update.effective_user.id
+    user_id = message.from_user.id
     
     if user_id in user_db:
         user_data = user_db[user_id]
         for coin, data in rates.items():
             data['balance'] = user_data['balance'] / data['price'] * 0.1
     
-    await update.message.reply_json(rates)
+    bot.reply_to(message, json.dumps(rates))
 
 # Обработка данных из WebApp
-async def handle_webapp_data(update: Update, context: CallbackContext) -> None:
+@bot.message_handler(content_types=['web_app_data'])
+def handle_webapp_data(message):
     """Обработка данных, отправленных из WebApp."""
     try:
-        data = json.loads(update.web_app_data.data)
+        data = json.loads(message.web_app_data.data)
         user_id = data.get('user_id')
         action_type = data.get('type')
         
@@ -205,15 +204,17 @@ async def handle_webapp_data(update: Update, context: CallbackContext) -> None:
         logger.error(f"Ошибка обработки WebApp данных: {e}")
 
 # Обработка предоплатного запроса
-async def precheckout(update: Update, context: CallbackContext) -> None:
+@bot.pre_checkout_query_handler(func=lambda query: True)
+def precheckout(pre_checkout_query):
     """Подтверждение предоплатного запроса."""
-    await update.pre_checkout_query.answer(ok=True)
+    bot.answer_pre_checkout_query(pre_checkout_query.id, ok=True)
 
 # Обработка успешного платежа
-async def successful_payment(update: Update, context: CallbackContext) -> None:
+@bot.message_handler(content_types=['successful_payment'])
+def successful_payment(message):
     """Обработка успешного платежа за Stars."""
-    payment = update.message.successful_payment
-    user_id = update.effective_user.id
+    payment = message.successful_payment
+    user_id = message.from_user.id
     
     if user_id in user_db:
         stars_amount = int(payment.total_amount / 100)
@@ -223,55 +224,44 @@ async def successful_payment(update: Update, context: CallbackContext) -> None:
             'amount': stars_amount,
             'date': datetime.now().isoformat()
         })
-        await update.message.reply_text(
+        bot.reply_to(
+            message,
             f'✅ Спасибо за покупку! Вы получили {stars_amount} Stars.\n'
             f'Ваш текущий баланс: {user_db[user_id]["stars"]} Stars'
         )
 
 # Создание инвойса для покупки Stars
-async def buy_stars(update: Update, context: CallbackContext) -> None:
+@bot.message_handler(commands=['buy_stars'])
+def buy_stars(message):
     """Создание инвойса для покупки Telegram Stars."""
     try:
-        amount = int(context.args[0]) if context.args else 1000
+        amount = int(message.text.split()[1]) if len(message.text.split()) > 1 else 1000
         price = int(amount * STARS_EXCHANGE_RATE * 100)
         
-        await context.bot.send_invoice(
-            chat_id=update.effective_chat.id,
+        bot.send_invoice(
+            chat_id=message.chat.id,
             title="Покупка Telegram Stars",
             description=f"Покупка {amount} Telegram Stars",
-            payload=f"stars_purchase_{amount}",
+            invoice_payload=f"stars_purchase_{amount}",
             provider_token=PROVIDER_TOKEN,
             currency="USD",
-            prices=[LabeledPrice("Stars", price)],
+            prices=[LabeledPrice(label="Stars", amount=price)],
             start_parameter="buy_stars"
         )
     except (IndexError, ValueError):
-        await update.message.reply_text('Ошибка: укажите количество Stars, например /buy_stars 1000')
+        bot.reply_to(message, 'Ошибка: укажите количество Stars, например /buy_stars 1000')
 
 # Обработчик ошибок
-async def error_handler(update: Update, context: CallbackContext) -> None:
+def error_handler(e):
     """Обработка ошибок бота."""
-    logger.error(f"Ошибка: {context.error}")
-    if update:
-        await update.message.reply_text('Произошла ошибка. Попробуйте позже.')
+    logger.error(f"Ошибка: {e}")
+    if hasattr(e, 'message'):
+        bot.reply_to(e.message, 'Произошла ошибка. Попробуйте позже.')
 
-def main() -> None:
+def main():
     """Запуск бота."""
-    application = Application.builder().token(TOKEN).build()
-    
-    # Регистрация обработчиков
-    application.add_handler(CommandHandler("start", start))
-    application.add_handler(CommandHandler("user_data", user_data))
-    application.add_handler(CommandHandler("buy_stars", buy_stars))
-    application.add_handler(MessageHandler(Filters.regex(r'^/user_data_api\?'), user_data_api))
-    application.add_handler(CommandHandler("crypto_rates_api", crypto_rates_api))
-    application.add_handler(MessageHandler(Filters.status_update.web_app_data, handle_webapp_data))
-    application.add_handler(PreCheckoutQueryHandler(precheckout))
-    application.add_handler(MessageHandler(Filters.successful_payment, successful_payment))
-    application.add_error_handler(error_handler)
-    
     print("Бот запущен...")
-    application.run_polling()
+    bot.infinity_polling()
 
 if __name__ == '__main__':
     main()
