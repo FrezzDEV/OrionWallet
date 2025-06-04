@@ -11,6 +11,7 @@ from aiogram.utils.keyboard import InlineKeyboardBuilder
 from aiogram.enums import ParseMode
 from aiogram.fsm.storage.memory import MemoryStorage
 import requests
+from aiogram.client.default import DefaultBotProperties
 
 # Настройка логирования
 logging.basicConfig(
@@ -22,7 +23,7 @@ logger = logging.getLogger(__name__)
 # Конфигурация
 TOKEN = '7814519439:AAGHwL-o20low67Mh-HB1Cs0fTmNlnX6RwQ'
 WEB_APP_URL = 'https://frezzdev.github.io/OrionWallet/'
-PROVIDER_TOKEN = 'ВАШ_ПЛАТЕЖНЫЙ_ТОКЕН'
+PROVIDER_TOKEN = '284685063:TEST:XXXXXXXXXXXXXXXXXXXXXXXX'
 STARS_EXCHANGE_RATE = 0.012987  # 1 STAR = 0.012987 USDT
 
 user_db = {}
@@ -48,7 +49,10 @@ def get_crypto_rates():
         logger.error(f"Ошибка получения курсов: {e}")
         return {}
 
-bot = Bot(token=TOKEN, parse_mode=ParseMode.HTML)
+bot = Bot(
+    token=TOKEN,
+    default=DefaultBotProperties(parse_mode=ParseMode.HTML)
+)
 dp = Dispatcher(storage=MemoryStorage())
 
 @dp.message(Command("start"))
