@@ -5,420 +5,254 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orion Wallet</title>
     <link rel="stylesheet" href="site.css">
-    <!-- Подключение иконок FontAwesome для улучшенной визуализации -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="app.js" defer></script>
 </head>
 <body>
-    <!-- Основной контейнер приложения -->
     <div class="app-container">
-        <!-- Шапка приложения -->
         <header class="header">
-            <h1 class="app-title">Orion Wallet</h1>
+            <div class="app-title">Orion Wallet</div>
             <div class="header-right">
                 <div class="user-info">
-                    <span>BETA</span>
+                    <span class="username">Загрузка...</span>
                     <span class="beta-badge">BETA</span>
                 </div>
-                <button class="info-button" onclick="openInfoModal()">
-                    <i class="fas fa-info-circle"></i>
+                <button class="info-button" onclick="openModal('info-modal')">
+                    <i class="material-icons">info</i>
                 </button>
             </div>
         </header>
 
-        <!-- Основной контент -->
         <main class="content">
-            <!-- Приветственное сообщение -->
             <div class="welcome-message">
-                Привет, <span id="username">@User</span>
+                Привет, <span>@User</span>
             </div>
 
-            <!-- Секция баланса -->
-            <section class="balance-section">
+            <div class="balance-section">
                 <div class="balance-label">Общий баланс</div>
                 <div class="balance-amount">
-                    <span id="total-balance">Загрузка...</span>
-                    <button class="hide-balance" onclick="toggleBalance()">
-                        <i class="fas fa-eye"></i>
+                    <span>Загрузка...</span>
+                    <button class="hide-balance">
+                        <i class="material-icons">visibility_off</i>
                     </button>
                 </div>
-                <div class="crypto-equivalent" id="crypto-equivalent">Загрузка данных...</div>
-                <!-- Выбор валюты -->
+                <div class="crypto-equivalent">Загрузка данных...</div>
                 <div class="currency-selector-top">
-                    <button class="currency-option-top active" data-currency="rub">₽</button>
-                    <button class="currency-option-top" data-currency="usd">$</button>
-                    <button class="currency-option-top" data-currency="eur">€</button>
-                    <button class="currency-option-top" data-currency="uah">₴</button>
+                    <button class="currency-top-option active">₽</button>
+                    <button class="currency-top-option">$</button>
+                    <button class="currency-top-option">€</button>
+                    <button class="currency-top-option">₴</button>
                 </div>
-            </section>
+            </div>
 
-            <!-- Кнопки действий -->
             <div class="actions-grid">
-                <button class="action-btn" onclick="openModal('deposit-modal')">
-                    <i class="fas fa-wallet"></i>
+                <button class="action-btn" onclick="openModal('stars-purchase-modal')">
+                    <i class="material-icons">add_circle</i>
                     <span class="action-label">Пополнить</span>
                 </button>
-                <button class="action-btn" onclick="openModal('withdraw-modal')">
-                    <i class="fas fa-paper-plane"></i>
+                <button class="action-btn">
+                    <i class="material-icons">send</i>
                     <span class="action-label">Отправить</span>
                 </button>
                 <button class="action-btn">
-                    <i class="fas fa-store"></i>
+                    <i class="material-icons">sell</i>
                     <span class="action-label">Продать</span>
                 </button>
-                <button class="action-btn" onclick="openStarsSection()">
-                    <i class="fas fa-star"></i>
+                <button class="action-btn" onclick="navigateTo('stars')">
+                    <i class="material-icons">star</i>
                     <span class="action-label">TG Stars</span>
                 </button>
             </div>
 
-            <!-- Секция криптовалют -->
-            <section class="assets-section">
+            <div class="assets-section">
                 <div class="assets-header">
-                    <span>Криптовалюты</span>
-                    <button class="refresh-btn" onclick="refreshCryptoData()">
-                        <i class="fas fa-sync-alt"></i>
+                    Криптовалюты
+                    <button class="refresh-btn">
+                        <i class="material-icons">refresh</i>
                     </button>
                 </div>
-                <!-- Поиск криптовалют -->
                 <div class="search-container">
-                    <i class="fas fa-search"></i>
+                    <i class="material-icons">search</i>
                     <input type="text" id="crypto-search" placeholder="Поиск криптовалют...">
                 </div>
-                <!-- Список криптовалют -->
-                <div id="crypto-list">
+                <div class="assets-list">
                     <div class="asset-item">
                         <div class="asset-info">
-                            <div class="asset-icon"><i class="fab fa-bitcoin"></i></div>
+                            <div class="asset-icon">...</div>
                             <div class="asset-details">
-                                <div class="asset-name">Bitcoin</div>
-                                <div class="asset-price">Загрузка...</div>
+                                <div class="asset-name">Загрузка...</div>
+                                <div class="asset-price">...</div>
                             </div>
                         </div>
                         <div class="asset-balance">
-                            <div class="balance-rub">0 BTC</div>
-                            <div class="balance-crypto">0.00 USDT</div>
+                            <div class="balance-rub">...</div>
+                            <div class="asset-change">...</div>
                         </div>
                     </div>
-                    <!-- Дополнительные элементы добавляются динамически -->
                 </div>
-            </section>
+                <canvas id="crypto-chart"></canvas>
+            </div>
 
-            <!-- Секция Telegram Stars -->
-            <section class="stars-container" id="stars-section">
+            <div class="stars-container" style="display: none;">
                 <div class="stars-header">
-                    <span class="stars-title">Telegram Stars</span>
-                    <span class="stars-rate-info">Курс: 1 STAR = <span class="stars-rate-highlight">0.012987$</span></span>
+                    <div class="stars-title">Telegram Stars</div>
+                    <div class="stars-rate-info">
+                        Курс: 1 STAR = <span class="stars-rate-highlight">0.012987$</span>
+                    </div>
                 </div>
                 <div class="stars-balance">
-                    <div class="stars-amount">0 <i class="fas fa-star"></i></div>
-                    <div class="balance-crypto">0.00 USDT</div>
+                    <div class="balance-label">Ваш баланс</div>
+                    <div class="stars-amount">
+                        <span>0</span>
+                        <i class="material-icons">star</i>
+                    </div>
+                    <div class="crypto-equivalent">0.00 USDT</div>
                 </div>
                 <div class="stars-actions">
-                    <button class="stars-action-btn" onclick="openModal('deposit-stars-modal')">
-                        <i class="fas fa-plus"></i>
+                    <button class="stars-action-btn" onclick="openModal('stars-purchase-modal')">
+                        <i class="material-icons">add_circle</i>
                         Пополнить
                     </button>
-                    <button class="stars-action-btn" onclick="openModal('withdraw-stars-modal')">
-                        <i class="fas fa-minus"></i>
+                    <button class="stars-action-btn" onclick="openModal('stars-withdraw-modal')">
+                        <i class="material-icons">send</i>
                         Вывести
                     </button>
                 </div>
                 <div class="exchange-form">
-                    <h3>Обменять Stars на криптовалюту</h3>
                     <div class="form-group">
                         <label class="form-label">Количество Stars</label>
-                        <input type="number" class="form-input" id="stars-amount" placeholder="Введите количество">
+                        <input type="number" class="form-input" placeholder="Введите количество">
                     </div>
                     <div class="form-group">
                         <label class="form-label">Получить</label>
                         <div class="currency-select">
-                            <button class="currency-option active" data-currency="usdt">USDT</button>
-                            <button class="currency-option" data-currency="ton">TON</button>
-                            <button class="currency-option" data-currency="btc">BTC</button>
+                            <button class="currency-option active">USDT</button>
+                            <button class="currency-option">TON</button>
+                            <button class="currency-option">BTC</button>
                         </div>
                     </div>
                     <div class="exchange-result">
                         <span>Вы получите:</span>
-                        <span id="exchange-result">~0.00 USDT</span>
+                        <span class="exchange-result-amount">~0.00 USDT</span>
                     </div>
-                    <button class="exchange-btn" onclick="exchangeStars()">Обменять</button>
+                    <button class="exchange-btn">Обменять</button>
                 </div>
-            </section>
+            </div>
 
-            <!-- История операций -->
-            <section class="history-section">
+            <div class="history-section" style="display: none;">
                 <div class="history-header">
-                    <h2 class="history-title">История операций</h2>
-                    <button class="refresh-btn"><i class="fas fa-sync-alt"></i></button>
+                    <div class="history-title">История операций</div>
                 </div>
                 <div class="filters">
                     <button class="filter-btn active">Все</button>
                     <button class="filter-btn">Пополнения</button>
-                    <button class="filter-btn">Вывод</button>
-                    <button class="filter-btn">Обмен</button>
+                    <button class="filter-btn">Выводы</button>
                 </div>
-                <div id="transaction-list">
+                <div class="transaction-list">
                     <div class="transaction-item">
-                        <div class="transaction-icon"><i class="fas fa-arrow-up"></i></div>
+                        <div class="transaction-icon">...</div>
                         <div class="transaction-details">
-                            <div class="transaction-title">Пополнение</div>
-                            <div class="transaction-date">Загрузка...</div>
+                            <div class="transaction-title">Загрузка...</div>
+                            <div class="transaction-date">...</div>
                         </div>
                         <div class="transaction-amount">
-                            <div class="amount-rub">+1000 Stars</div>
-                            <div class="amount-crypto">12.99 USDT</div>
+                            <div class="amount-rub">...</div>
+                            <div class="amount-crypto">...</div>
                         </div>
                     </div>
                 </div>
-            </section>
+            </div>
         </main>
 
-        <!-- Нижняя навигация -->
         <nav class="bottom-nav">
-            <div class="nav-item active" onclick="showSection('home')">
-                <i class="fas fa-home nav-icon"></i>
+            <div class="nav-item active" onclick="navigateTo('home')">
+                <i class="material-icons nav-icon">home</i>
                 Главная
             </div>
-            <div class="nav-item" onclick="showSection('history')">
-                <i class="fas fa-history nav-icon"></i>
+            <div class="nav-item" onclick="navigateTo('history')">
+                <i class="material-icons nav-icon">history</i>
                 История
             </div>
-            <div class="nav-item nav-center" onclick="openModal('deposit-modal')">
-                <i class="fas fa-plus"></i>
+            <div class="nav-item nav-center" onclick="openModal('stars-purchase-modal')">
+                <i class="material-icons nav-icon">add</i>
             </div>
-            <div class="nav-item" onclick="showSection('stars')">
-                <i class="fas fa-star nav-icon"></i>
-                Stars
+            <div class="nav-item" onclick="navigateTo('funds')">
+                <i class="material-icons nav-icon">account_balance_wallet</i>
+                Пополнить
             </div>
-            <div class="nav-item" onclick="showSection('profile')">
-                <i class="fas fa-user nav-icon"></i>
+            <div class="nav-item" onclick="navigateTo('profile')">
+                <i class="material-icons nav-icon">person</i>
                 Профиль
             </div>
         </nav>
+    </div>
 
-        <!-- Модальное окно пополнения Stars -->
-        <div class="modal-overlay hidden" id="deposit-stars-modal">
-            <div class="modal">
-                <div class="modal-header">
-                    <h2 class="modal-title">Пополнение Telegram Stars</h2>
-                    <button class="close-btn" onclick="closeModal('deposit-stars-modal')">&times;</button>
-                </div>
-                <div class="info-content">
-                    <div class="info-section">
-                        <p class="info-text">Для пополнения баланса Telegram Stars:</p>
-                        <ol>
-                            <li>Нажмите кнопку "Купить Stars"</li>
-                            <li>Выберите количество Stars для покупки</li>
-                            <li>Подтвердите покупку в открывшемся окне Telegram</li>
-                        </ol>
-                        <p class="info-text">Текущий курс: <span class="highlight">1 Star = 0.012987 USDT</span></p>
-                    </div>
-                    <div class="stars-actions">
-                        <button class="stars-action-btn" onclick="buyStars(500)">500 Stars</button>
-                        <button class="stars-action-btn" onclick="buyStars(1000)">1000 Stars</button>
-                        <button class="stars-action-btn" onclick="buyStars(5000)">5000 Stars</button>
-                    </div>
-                    <button class="add-funds-btn" onclick="buyStars()">Купить Stars</button>
-                </div>
+    <div class="modal-overlay hidden" id="info-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">О кошельке</div>
+                <button class="close-btn" onclick="closeModal('info-modal')">
+                    <i class="material-icons">close</i>
+                </button>
             </div>
-        </div>
-
-        <!-- Модальное окно вывода Stars -->
-        <div class="modal-overlay hidden" id="withdraw-stars-modal">
-            <div class="modal">
-                <div class="modal-header">
-                    <h2 class="modal-title">Вывод Telegram Stars</h2>
-                    <button class="close-btn" onclick="closeModal('withdraw-stars-modal')">&times;</button>
-                </div>
-                <div class="info-content">
-                    <div class="info-section">
-                        <p class="info-text">Для вывода Telegram Stars:</p>
-                        <div class="form-group">
-                            <label class="form-label">Количество Stars</label>
-                            <input type="number" class="form-input" id="withdraw-amount" placeholder="Введите количество">
-                        </div>
-                        <div class="form-group">
-                            <label class="form-label">Telegram аккаунт получателя</label>
-                            <input type="text" class="form-input" id="recipient" placeholder="@Username">
-                        </div>
-                        <button class="add-funds-btn" onclick="withdrawStars()">Вывести</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Модальное окно информации -->
-        <div class="modal-overlay hidden" id="info-modal">
-            <div class="modal">
-                <div class="modal-header">
-                    <h2 class="modal-title">О Orion Wallet</h2>
-                    <button class="close-btn" onclick="closeModal('info-modal')">&times;</button>
-                </div>
-                <div class="info-content">
-                    <div class="info-section">
-                        <h3 class="info-title">О приложении</h3>
-                        <p class="info-text">Orion Wallet — это ваш надежный криптокошелек в Telegram. Управляйте своими активами, обменивайте Telegram Stars и следите за курсами криптовалют в реальном времени.</p>
-                    </div>
-                    <div class="info-section">
-                        <h3 class="info-title">Контакты</h3>
-                        <p class="info-text">Поддержка: <a href="mailto:support@orionwallet.com" class="highlight">support@orionwallet.com</a></p>
-                    </div>
+            <div class="info-content">
+                <div class="info-section">
+                    <div class="info-title">Orion Wallet</div>
+                    <div class="info-text">Добро пожаловать в Orion Wallet — ваш надежный криптокошелек в Telegram!</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <script>
-        // Инициализация приложения
-        document.addEventListener('DOMContentLoaded', () => {
-            // Загрузка данных пользователя
-            loadUserData();
-            // Загрузка курсов криптовалют
-            loadCryptoData();
-            // Инициализация поиска
-            initSearch();
-        });
+    <div class="modal-overlay hidden" id="stars-purchase-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Пополнение Telegram Stars</div>
+                <button class="close-btn" onclick="closeModal('stars-purchase-modal')">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
+            <div class="info-content">
+                <div class="info-section">
+                    <div class="info-text">Для пополнения баланса Telegram Stars:</div>
+                    <div class="info-text">1. Нажмите кнопку "Купить Stars"</div>
+                    <div class="info-text">2. Выберите количество Stars для покупки</div>
+                    <div class="info-text">3. Подтвердите покупку в открывшемся окне Telegram</div>
+                    <div class="info-text">
+                        Текущий курс: 1 Star = <span class="highlight">0.012987 USDT</span>
+                    </div>
+                </div>
+                <div class="currency-select">
+                    <button class="currency-option" onclick="selectStarsAmount(500)">500 Stars</button>
+                    <button class="currency-option" onclick="selectStarsAmount(1000)">1000 Stars</button>
+                    <button class="currency-option" onclick="selectStarsAmount(5000)">5000 Stars</button>
+                </div>
+                <button class="add-funds-btn" onclick="buyStars()">Купить Stars</button>
+            </div>
+        </div>
+    </div>
 
-        // Функция загрузки данных пользователя
-        async function loadUserData() {
-            try {
-                const response = await fetch('/user_data_api?user_id=' + Telegram.WebApp.initDataUnsafe.user.id);
-                const data = await response.json();
-                if (data.status === 'success') {
-                    document.getElementById('username').textContent = '@' + data.user_id;
-                    document.getElementById('total-balance').textContent = data.balance.toFixed(2) + ' USDT';
-                    document.querySelector('.stars-amount').textContent = data.stars;
-                }
-            } catch (error) {
-                console.error('Ошибка загрузки данных пользователя:', error);
-            }
-        }
-
-        // Функция загрузки курсов криптовалют
-        async function loadCryptoData() {
-            try {
-                const response = await fetch('/crypto_rates_api');
-                const data = await response.json();
-                const cryptoList = document.getElementById('crypto-list');
-                cryptoList.innerHTML = '';
-                for (const [coin, info] of Object.entries(data)) {
-                    const item = document.createElement('div');
-                    item.className = 'asset-item';
-                    item.innerHTML = `
-                        <div class="asset-info">
-                            <div class="asset-icon"><i class="fab fa-${coin}"></i></div>
-                            <div class="asset-details">
-                                <div class="asset-name">${coin.toUpperCase()}</div>
-                                <div class="asset-price">$${info.price.toFixed(2)}</div>
-                            </div>
-                        </div>
-                        <div class="asset-balance">
-                            <div class="balance-rub">${info.balance.toFixed(4)} ${coin.toUpperCase()}</div>
-                            <div class="balance-crypto">$${(info.balance * info.price).toFixed(2)} USDT</div>
-                        </div>
-                    `;
-                    cryptoList.appendChild(item);
-                }
-            } catch (error) {
-                console.error('Ошибка загрузки курсов:', error);
-            }
-        }
-
-        // Обновление данных криптовалют
-        function refreshCryptoData() {
-            loadCryptoData();
-        }
-
-        // Поиск криптовалют
-        function initSearch() {
-            const searchInput = document.getElementById('crypto-search');
-            searchInput.addEventListener('input', () => {
-                const query = searchInput.value.toLowerCase();
-                const items = document.querySelectorAll('.asset-item');
-                items.forEach(item => {
-                    const name = item.querySelector('.asset-name').textContent.toLowerCase();
-                    item.style.display = name.includes(query) ? 'flex' : 'none';
-                });
-            });
-        }
-
-        // Переключение видимости баланса
-        function toggleBalance() {
-            const balance = document.getElementById('total-balance');
-            balance.textContent = balance.textContent.includes('***') ? 'Загрузка...' : '***';
-        }
-
-        // Открытие модального окна
-        function openModal(modalId) {
-            document.getElementById(modalId).classList.remove('hidden');
-        }
-
-        // Закрытие модального окна
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.add('hidden');
-        }
-
-        // Открытие секции Stars
-        function openStarsSection() {
-            showSection('stars');
-        }
-
-        // Показ определенной секции
-        function showSection(section) {
-            document.querySelectorAll('.content > section').forEach(s => s.classList.add('hidden'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            if (section === 'home') {
-                document.querySelector('.balance-section').classList.remove('hidden');
-                document.querySelector('.assets-section').classList.remove('hidden');
-                document.querySelector('.nav-item:nth-child(1)').classList.add('active');
-            } else if (section === 'history') {
-                document.querySelector('.history-section').classList.remove('hidden');
-                document.querySelector('.nav-item:nth-child(2)').classList.add('active');
-            } else if (section === 'stars') {
-                document.querySelector('.stars-container').classList.remove('hidden');
-                document.querySelector('.nav-item:nth-child(4)').classList.add('active');
-            }
-        }
-
-        // Покупка Stars
-        function buyStars(amount) {
-            Telegram.WebApp.sendData(JSON.stringify({
-                type: 'buy_stars',
-                user_id: Telegram.WebApp.initDataUnsafe.user.id,
-                amount: amount || 1000
-            }));
-            closeModal('deposit-stars-modal');
-        }
-
-        // Вывод Stars
-        function withdrawStars() {
-            const amount = document.getElementById('withdraw-amount').value;
-            const recipient = document.getElementById('recipient').value;
-            Telegram.WebApp.sendData(JSON.stringify({
-                type: 'withdraw_stars',
-                user_id: Telegram.WebApp.initDataUnsafe.user.id,
-                amount: parseInt(amount),
-                recipient
-            }));
-            closeModal('withdraw-stars-modal');
-        }
-
-        // Обмен Stars
-        function exchangeStars() {
-            const amount = document.getElementById('stars-amount').value;
-            const currency = document.querySelector('.currency-option.active').dataset.currency;
-            Telegram.WebApp.sendData(JSON.stringify({
-                type: 'exchange_stars',
-                user_id: Telegram.WebApp.initDataUnsafe.user.id,
-                amount: parseInt(amount),
-                currency
-            }));
-        }
-
-        // Открытие информационного модального окна
-        function openInfoModal() {
-            openModal('info-modal');
-        }
-    </script>
+    <div class="modal-overlay hidden" id="stars-withdraw-modal">
+        <div class="modal">
+            <div class="modal-header">
+                <div class="modal-title">Вывод Telegram Stars</div>
+                <button class="close-btn" onclick="closeModal('stars-withdraw-modal')">
+                    <i class="material-icons">close</i>
+                </button>
+            </div>
+            <div class="info-content">
+                <div class="form-group">
+                    <label class="form-label">Количество Stars</label>
+                    <input type="number" class="form-input" id="withdraw-amount" placeholder="Введите количество">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Telegram аккаунт получателя</label>
+                    <input type="text" class="form-input" id="withdraw-recipient" placeholder="@username">
+                </div>
+                <button class="add-funds-btn" onclick="withdrawStars()">Вывести</button>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
