@@ -1,8 +1,7 @@
-// Настройки валют
-const currencySettings = {
-    rub: { symbol: '₽', format: num => num.toLocaleString('ru-RU', { maximumFractionDigits: 2 }) + ' ₽' },
-    usd: { symbol: '$', format: num => '$ ' + num.toLocaleString('en-US', { maximumFractionDigits: 2 }) },
-    eur: { symbol: '€', format: num => num.toLocaleString('de-DE', {
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Orion Wallet</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
@@ -1141,14 +1140,6 @@ const currencySettings = {
               rate: 0, prevRate: 0, change: 0, balance: 0, balanceRub: 0 }
         ];
 
-        // Настройки валют
-        const currencySettings = {
-            rub: { symbol: '₽', format: num => num.toLocaleString('ru-RU', { maximumFractionDigits: 2 }) + ' ₽' },
-            usd: { symbol: '$', format: num => '$ ' + num.toLocaleString('en-US', { maximumFractionDigits: 2 }) },
-            eur: { symbol: '€', format: num => num.toLocaleString('de-DE', { maximumFractionDigits: 2 }) + ' €' },
-            uah: { symbol: '₴', format: num => num.toLocaleString('uk-UA', { maximumFractionDigits: 2 }) + ' ₴' }
-        };
-
         // Данные пользователя
         let userData = {
             id: null,
@@ -1448,6 +1439,10 @@ const currencySettings = {
 
         // Инициализация при загрузке
         document.addEventListener('DOMContentLoaded', initApp);
+        console.log(currencySettings.rub.format(123456.789)); // 123 456,79 ₽
+console.log(currencySettings.usd.format(123456.789)); // $ 123,456.79
+console.log(currencySettings.eur.format(123456.789)); // 123.456,79 €
+console.log(currencySettings.uah.format(123456.789)); // "1 234,56 ₴"
     </script>
 </body>
 </html>
